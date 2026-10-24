@@ -1,0 +1,765 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Text Analysis Backend API",
+    "description": "Бэкенд-сервис для настольного приложения анализа текстовых данных социальных сетей с помощью открытых языковых моделей (русский и английский языки).\n\nВключает точки управления каталогом моделей, апробации (проверки работы) моделей на единичных примерах и тестовых выборках.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health check",
+        "description": "Endpoint to verify backend process health, version, and status.",
+        "operationId": "get_health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "List available models",
+        "description": "Retrieve all supported NLP models for social media analysis with filtering by task type and language.",
+        "operationId": "list_models_api_v1_models_get",
+        "parameters": [
+          {
+            "name": "task_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ModelTaskType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by NLP task type",
+              "title": "Task Type"
+            },
+            "description": "Filter by NLP task type"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by supported language code (e.g. 'ru', 'en')",
+              "title": "Language"
+            },
+            "description": "Filter by supported language code (e.g. 'ru', 'en')"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Get model details",
+        "description": "Retrieve detailed specifications, metadata, and default sample text for a specific model.",
+        "operationId": "get_model_api_v1_models__model_id__get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelMetadata"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}/probe": {
+      "post": {
+        "tags": [
+          "Model Probing"
+        ],
+        "summary": "Probe model on single text",
+        "description": "Run single-sample evaluation/testing for an individual text against the specified model.",
+        "operationId": "probe_model_api_v1_models__model_id__probe_post",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the model to test",
+              "title": "Model Id"
+            },
+            "description": "ID of the model to test"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProbeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProbeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/probe": {
+      "post": {
+        "tags": [
+          "Model Probing"
+        ],
+        "summary": "Generic probe endpoint",
+        "description": "Run model evaluation where model_id is specified directly in request body.",
+        "operationId": "probe_generic_api_v1_probe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProbeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProbeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}/probe/batch": {
+      "post": {
+        "tags": [
+          "Model Probing"
+        ],
+        "summary": "Batch probe model",
+        "description": "Evaluate a small batch of sample texts against the specified model (up to 50 items).",
+        "operationId": "probe_model_batch_api_v1_models__model_id__probe_batch_post",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the model to test",
+              "title": "Model Id"
+            },
+            "description": "ID of the model to test"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProbeBatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProbeBatchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LabelScore": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Class label name",
+            "examples": [
+              "positive"
+            ]
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "description": "Normalized probability score (0.0 to 1.0)",
+            "examples": [
+              0.9452
+            ]
+          },
+          "percentage": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Percentage",
+            "description": "Human-friendly percentage (0 to 100%)",
+            "examples": [
+              94.52
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "score",
+          "percentage"
+        ],
+        "title": "LabelScore"
+      },
+      "ModelListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ModelMetadata"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of available models"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of registered models"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "ModelListResponse"
+      },
+      "ModelMetadata": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Unique model identifier (slug)",
+            "examples": [
+              "rubert-sentiment-conversational"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Human-readable model name",
+            "examples": [
+              "RuBERT Sentiment Conversational"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Brief model description and intended use cases"
+          },
+          "task_type": {
+            "$ref": "#/components/schemas/ModelTaskType",
+            "description": "Primary NLP task performed by the model"
+          },
+          "languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Languages",
+            "description": "Supported languages (e.g. ['ru'], ['en'])",
+            "examples": [
+              [
+                "ru"
+              ]
+            ]
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Labels",
+            "description": "Output class labels",
+            "examples": [
+              [
+                "negative",
+                "neutral",
+                "positive"
+              ]
+            ]
+          },
+          "hf_repo_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hf Repo Id",
+            "description": "HuggingFace model repository ID",
+            "examples": [
+              "sberbank-ai/sbert_large_nlu_ru"
+            ]
+          },
+          "max_sequence_length": {
+            "type": "integer",
+            "title": "Max Sequence Length",
+            "description": "Maximum input sequence length in tokens",
+            "default": 512,
+            "examples": [
+              512
+            ]
+          },
+          "default_sample_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Sample Text",
+            "description": "Default sample text for testing in UI"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ModelStatus",
+            "description": "Current availability status of the model",
+            "default": "ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "task_type",
+          "languages",
+          "labels"
+        ],
+        "title": "ModelMetadata"
+      },
+      "ModelStatus": {
+        "type": "string",
+        "enum": [
+          "ready",
+          "downloading",
+          "not_installed",
+          "error"
+        ],
+        "title": "ModelStatus"
+      },
+      "ModelTaskType": {
+        "type": "string",
+        "enum": [
+          "sentiment",
+          "emotion",
+          "toxicity",
+          "topic_classification"
+        ],
+        "title": "ModelTaskType"
+      },
+      "ProbeBatchItem": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ProbeBatchItem"
+      },
+      "ProbeBatchRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProbeBatchItem"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Items",
+            "description": "List of sample texts for batch testing"
+          },
+          "top_k": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 50.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top K"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ProbeBatchRequest"
+      },
+      "ProbeBatchResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ProbeResponse"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "total_latency_ms": {
+            "type": "number",
+            "title": "Total Latency Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "results",
+          "total_latency_ms"
+        ],
+        "title": "ProbeBatchResponse"
+      },
+      "ProbeRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Text",
+            "description": "Text to be analyzed by the model",
+            "examples": [
+              "Отличный сервис, всё работает быстро и без сбоев!"
+            ]
+          },
+          "model_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Id",
+            "description": "Optional model ID override if not specified in URL path",
+            "examples": [
+              "rubert-sentiment-conversational"
+            ]
+          },
+          "top_k": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 50.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top K",
+            "description": "Limit the number of ranked label scores returned",
+            "examples": [
+              3
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ProbeRequest"
+      },
+      "ProbeResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "ID of the model that executed the inference",
+            "examples": [
+              "rubert-sentiment-conversational"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "description": "Analyzed input text"
+          },
+          "primary_label": {
+            "type": "string",
+            "title": "Primary Label",
+            "description": "Top predicted class label",
+            "examples": [
+              "positive"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "description": "Probability score of the primary label",
+            "examples": [
+              0.9452
+            ]
+          },
+          "scores": {
+            "items": {
+              "$ref": "#/components/schemas/LabelScore"
+            },
+            "type": "array",
+            "title": "Scores",
+            "description": "Full or ranked list of label probabilities"
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms",
+            "description": "Inference latency in milliseconds",
+            "examples": [
+              14.8
+            ]
+          },
+          "tokens_count": {
+            "type": "integer",
+            "title": "Tokens Count",
+            "description": "Estimated or actual token count of input",
+            "examples": [
+              9
+            ]
+          },
+          "device": {
+            "type": "string",
+            "title": "Device",
+            "description": "Compute device used for inference (cpu / cuda)",
+            "default": "cpu",
+            "examples": [
+              "cpu"
+            ]
+          },
+          "is_mock": {
+            "type": "boolean",
+            "title": "Is Mock",
+            "description": "Flag indicating if inference was simulated via mock engine",
+            "default": false,
+            "examples": [
+              false
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "text",
+          "primary_label",
+          "confidence",
+          "scores",
+          "latency_ms",
+          "tokens_count"
+        ],
+        "title": "ProbeResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
