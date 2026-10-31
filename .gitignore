@@ -44,3 +44,5 @@ htmlcov/
 *.log
 scratch/
 tmp/
+
+data/
