@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Analysis Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #07101B;
+      --bg-surface: #0B192C;
+      --bg-surface-elevated: #112239;
+      --border-subtle: rgba(84, 172, 191, 0.16);
+      --border-focus: rgba(167, 235, 242, 0.45);
+      
+      --accent-deep: #023859;
+      --accent-mid: #26658C;
+      --accent-cyan: #54ACBF;
+      --accent-ice: #A7EBF2;
+      
+      --text-primary: #F0F6FC;
+      --text-secondary: #8B9BB4;
+      --text-muted: #5C6E87;
+      
+      --success: #38D9A9;
+      --danger: #FF6B6B;
+      --warning: #FCC419;
+
+      --radius-pill: 9999px;
+      --radius-card: 20px;
+      --radius-subcard: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* Left Sidebar: Minimalist Pill Navigation */
+    .sidebar {
+      width: 90px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(11, 25, 44, 0.8) 0%, rgba(7, 16, 27, 0.95) 100%);
+      border-right: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px);
+    }
+
+    .brand-pill {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-deep));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 24px rgba(84, 172, 191, 0.25);
+    }
+
+    .brand-pill svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .nav-container {
+      background: rgba(17, 34, 57, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-item {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .nav-item:hover {
+      color: var(--accent-ice);
+      background: rgba(84, 172, 191, 0.12);
+    }
+
+    .nav-item.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(84, 172, 191, 0.35), rgba(38, 101, 140, 0.5));
+      box-shadow: 0 4px 16px rgba(84, 172, 191, 0.3);
+      border: 1px solid rgba(167, 235, 242, 0.3);
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 12px var(--success);
+      transition: all 0.3s ease;
+    }
+
+    .status-dot.offline {
+      background-color: var(--danger);
+      box-shadow: 0 0 12px var(--danger);
+    }
+
+    /* Main Bento Content Area */
+    .main-wrapper {
+      flex: 1;
+      padding: 28px 32px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .topbar-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--accent-ice) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .topbar-title p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .backend-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(17, 34, 57, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Bento Grid Layout */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .bento-card {
+      background: rgba(11, 25, 44, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s ease;
+    }
+
+    .bento-card:hover {
+      border-color: rgba(84, 172, 191, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--accent-cyan);
+    }
+
+    /* Input Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select, textarea, input[type="text"] {
+      width: 100%;
+      background: rgba(7, 16, 27, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-subcard);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 12px 16px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    select:focus, textarea:focus, input[type="text"]:focus {
+      border-color: var(--accent-ice);
+      box-shadow: 0 0 0 3px rgba(84, 172, 191, 0.15);
+    }
+
+    textarea {
+      resize: none;
+      height: 110px;
+      line-height: 1.5;
+    }
+
+    /* Action Buttons */
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-pill);
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-mid));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(84, 172, 191, 0.35);
+    }
+
+    .btn-pill:hover {
+      background: linear-gradient(135deg, var(--accent-ice), var(--accent-cyan));
+      color: var(--bg-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(167, 235, 242, 0.4);
+    }
+
+    .btn-pill:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(17, 34, 57, 0.8);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(38, 101, 140, 0.4);
+      color: #fff;
+      border-color: var(--accent-cyan);
+    }
+
+    /* Result Preview Card */
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .primary-metric {
+      background: rgba(7, 16, 27, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-subcard);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-ice);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .prob-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .prob-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .prob-name {
+      width: 80px;
+      color: var(--text-secondary);
+      text-transform: capitalize;
+    }
+
+    .prob-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(7, 16, 27, 0.8);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .prob-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, var(--accent-mid), var(--accent-cyan));
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .prob-pct {
+      width: 50px;
+      text-align: right;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* File Drag & Drop Zone */
+    .dropzone {
+      border: 2px dashed rgba(84, 172, 191, 0.25);
+      border-radius: var(--radius-subcard);
+      padding: 30px 20px;
+      text-align: center;
+      background: rgba(7, 16, 27, 0.3);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent-ice);
+      background: rgba(84, 172, 191, 0.08);
+    }
+
+    .dropzone svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--accent-cyan);
+    }
+
+    .dropzone-text {
+      font-size: 14px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .dropzone-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Progress Display */
+    .task-card {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: var(--radius-subcard);
+      background: rgba(7, 16, 27, 0.6);
+      border: 1px solid var(--border-subtle);
+      display: none;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--success));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Hidden Sections */
+    .view-panel {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .view-panel.active-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* Subtle Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(84, 172, 191, 0.2);
+      border-radius: var(--radius-pill);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(84, 172, 191, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar (Luna Palette & Minimalist Iconsax style) -->
+  <aside class="sidebar">
+    <div class="brand-pill" title="Text Analysis Studio">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+
+    <div class="nav-container">
+      <button class="nav-item active" id="nav-probe" title="Апробация моделей">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <button class="nav-item" id="nav-files" title="Обработка CSV файлов">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+      <button class="nav-item" id="nav-models" title="Каталог моделей">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="status-dot" id="backend-status-dot" title="Бэкенд активен"></div>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <div class="topbar">
+      <div class="topbar-title">
+        <h1 id="view-title">Окно апробации моделей</h1>
+        <p id="view-desc">Мгновенный анализ единичных текстов социальных сетей</p>
+      </div>
+      <div class="backend-badge">
+        <div class="status-dot" id="backend-badge-dot"></div>
+        <span id="backend-status-text">Сервер: 127.0.0.1:8000</span>
+      </div>
+    </div>
+
+    <!-- VIEW 1: PROBING -->
+    <section class="view-panel active-panel" id="panel-probe">
+      <div class="bento-grid">
+        <!-- Input Bento Card -->
+        <div class="bento-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Ввод текста и выбор модели
+            </h2>
+          </div>
+
+          <div class="form-group">
+            <label>Языковая модель</label>
+            <select id="probe-model-select">
+              <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский)</option>
+              <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English)</option>
+              <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский)</option>
+              <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский)</option>
+              <option value="distilbert-emotion-en">DistilBERT Emotion Classifier (English)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+            <label>Текст для анализа</label>
+            <textarea id="probe-text-input" placeholder="Введите короткий комментарий, отзыв или твит...">Проект получился отличный, интерфейс понятный и отзывчивый!</textarea>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: auto;">
+            <button class="btn-pill" id="btn-probe-exec">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Оценить моделью
+            </button>
+            <button class="btn-pill btn-secondary" id="btn-sample-fill">Тестовый пример</button>
+          </div>
+        </div>
+
+        <!-- Output Bento Card -->
+        <div class="bento-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Результат классификации
+            </h2>
+            <span style="font-size: 12px; color: var(--text-muted);" id="latency-text">0.0 мс</span>
+          </div>
+
+          <div class="results-container">
+            <div class="primary-metric">
+              <div>
+                <div class="metric-label">Главный класс</div>
+                <div class="metric-value" id="res-primary-label">—</div>
+              </div>
+              <div style="text-align: right;">
+                <div class="metric-label">Уверенность</div>
+                <div class="metric-value" id="res-confidence" style="color: var(--accent-cyan);">0%</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Распределение вероятностей</label>
+              <div class="prob-bar-group" id="prob-bars">
+                <div style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 24px 0;">
+                  Нажмите «Оценить моделью» для инференса
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: auto; padding: 12px; border-radius: var(--radius-subcard); background: rgba(7, 16, 27, 0.4); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
+              <span id="token-count-text">Токенов: —</span>
+              <span id="device-text">Режим: CPU</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: CSV PROCESSING -->
+    <section class="view-panel" id="panel-files">
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Пакетная обработка CSV
+            </h2>
+          </div>
+
+          <div class="form-group">
+            <label>Целевая модель</label>
+            <select id="file-model-select">
+              <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский)</option>
+              <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский)</option>
+              <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский)</option>
+              <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English)</option>
+            </select>
+          </div>
+
+          <input type="file" id="file-input" accept=".csv" style="display: none;">
+          <div class="dropzone" id="dropzone">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div class="dropzone-text" id="dropzone-text">Перетащите CSV файл или нажмите для выбора</div>
+            <div class="dropzone-sub">Формат: 1 столбец текстов (UTF-8 или CP1251)</div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="btn-pill" id="btn-start-process" disabled style="opacity: 0.5;">
+              Запустить обработку
+            </button>
+          </div>
+
+          <!-- Progress Widget -->
+          <div class="task-card" id="task-widget">
+            <div class="task-header">
+              <span id="task-status-title" style="font-weight: 600;">Обработка массива...</span>
+              <span id="task-percentage" style="color: var(--accent-ice); font-weight: 700;">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="task-bar-fill"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+              <span id="task-rows-text">0 / 0 строк</span>
+              <a href="#" id="task-download-btn" style="color: var(--accent-cyan); display: none; text-decoration: none; font-weight: 600;">Скачать результат</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Требования и формат данных
+            </h2>
+          </div>
+          <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary); display: flex; flex-direction: column; gap: 14px;">
+            <p><strong>Формат:</strong> Файл <code>.csv</code> с одним столбцом текстовых данных (отзывы, комментарии или твиты).</p>
+            <p><strong>Асинхронность:</strong> Обработка выполняется в фоновом режиме сервера с сохранением стабильности интерфейса.</p>
+            <p><strong>Результат:</strong> Итоговый CSV дополняется столбцами <code>predicted_label</code>, <code>confidence</code> и вероятностями классов.</p>
+            <div style="margin-top: auto; padding: 14px; background: rgba(7, 16, 27, 0.4); border-radius: var(--radius-subcard); border: 1px solid var(--border-subtle);">
+              <div style="font-weight: 600; color: var(--accent-ice); margin-bottom: 4px;">Быстрая генерация примера</div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Создать тестовый CSV прямо в браузере для проверки:</p>
+              <button class="btn-pill btn-secondary" id="btn-create-dummy-csv" style="width: 100%; font-size: 13px; padding: 8px 14px;">Сгенерировать demo_comments.csv</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CATALOG -->
+    <section class="view-panel" id="panel-models">
+      <div class="bento-card" style="height: 100%;">
+        <div class="card-header">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            Реестр моделей для исследований
+          </h2>
+          <span style="font-size: 13px; color: var(--accent-ice);" id="models-count">Загрузка...</span>
+        </div>
+        <div id="models-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 4px;">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = 'http://127.0.0.1:8000/api/v1';
+
+    // Navigation Switcher
+    const navProbe = document.getElementById('nav-probe');
+    const navFiles = document.getElementById('nav-files');
+    const navModels = document.getElementById('nav-models');
+
+    const panelProbe = document.getElementById('panel-probe');
+    const panelFiles = document.getElementById('panel-files');
+    const panelModels = document.getElementById('panel-models');
+
+    const viewTitle = document.getElementById('view-title');
+    const viewDesc = document.getElementById('view-desc');
+
+    function switchView(view) {
+      [navProbe, navFiles, navModels].forEach(b => b.classList.remove('active'));
+      [panelProbe, panelFiles, panelModels].forEach(p => p.classList.remove('active-panel'));
+
+      if (view === 'probe') {
+        navProbe.classList.add('active');
+        panelProbe.classList.add('active-panel');
+        viewTitle.innerText = 'Окно апробации моделей';
+        viewDesc.innerText = 'Мгновенный анализ единичных текстов социальных сетей';
+      } else if (view === 'files') {
+        navFiles.classList.add('active');
+        panelFiles.classList.add('active-panel');
+        viewTitle.innerText = 'Окно обработки массивов текстов';
+        viewDesc.innerText = 'Асинхронный анализ CSV файлов с расчетом прогресса';
+      } else if (view === 'models') {
+        navModels.classList.add('active');
+        panelModels.classList.add('active-panel');
+        viewTitle.innerText = 'Каталог доступных моделей';
+        viewDesc.innerText = 'Спецификации открытых моделей для русского и английского языков';
+        loadModelsCatalog();
+      }
+    }
+
+    navProbe.addEventListener('click', () => switchView('probe'));
+    navFiles.addEventListener('click', () => switchView('files'));
+    navModels.addEventListener('click', () => switchView('models'));
+
+    // Backend Health Check
+    async function checkHealth() {
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        if (res.ok) {
+          document.getElementById('backend-status-dot').classList.remove('offline');
+          document.getElementById('backend-badge-dot').classList.remove('offline');
+          document.getElementById('backend-status-text').innerText = 'Сервер активен (8000)';
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        document.getElementById('backend-status-dot').classList.add('offline');
+        document.getElementById('backend-badge-dot').classList.add('offline');
+        document.getElementById('backend-status-text').innerText = 'Сервер недоступен';
+      }
+    }
+    checkHealth();
+    setInterval(checkHealth, 3000);
+
+    // Probing Inference
+    const btnProbe = document.getElementById('btn-probe-exec');
+    const probeTextInput = document.getElementById('probe-text-input');
+    const probeModelSelect = document.getElementById('probe-model-select');
+
+    btnProbe.addEventListener('click', async () => {
+      const text = probeTextInput.value.trim();
+      const modelId = probeModelSelect.value;
+      if (!text) return;
+
+      btnProbe.disabled = true;
+      btnProbe.innerText = 'Вычисление...';
+
+      try {
+        const res = await fetch(`${API_BASE}/models/${modelId}/probe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+
+        document.getElementById('res-primary-label').innerText = data.primary_label;
+        document.getElementById('res-confidence').innerText = `${Math.round(data.confidence * 100)}%`;
+        document.getElementById('latency-text').innerText = `${data.latency_ms} мс`;
+        document.getElementById('token-count-text').innerText = `Токенов: ${data.tokens_count}`;
+        document.getElementById('device-text').innerText = `Режим: ${data.device.toUpperCase()}`;
+
+        // Render Probabilities Bars
+        const container = document.getElementById('prob-bars');
+        container.innerHTML = '';
+        data.scores.forEach(s => {
+          const row = document.createElement('div');
+          row.className = 'prob-row';
+          row.innerHTML = `
+            <div class="prob-name">${s.label}</div>
+            <div class="prob-track">
+              <div class="prob-fill" style="width: ${s.percentage}%"></div>
+            </div>
+            <div class="prob-pct">${s.percentage}%</div>
+          `;
+          container.appendChild(row);
+        });
+      } catch (err) {
+        alert('Ошибка связи с бэкендом: ' + err.message);
+      } finally {
+        btnProbe.disabled = false;
+        btnProbe.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Оценить моделью`;
+      }
+    });
+
+    document.getElementById('btn-sample-fill').addEventListener('click', () => {
+      const samples = [
+        "Невероятно удобное приложение, анализ текстов проходит за считанные секунды!",
+        "Ужасный опыт, постоянные зависания и ничего не понятно.",
+        "Обычный рабочий инструмент для социологических исследований."
+      ];
+      probeTextInput.value = samples[Math.floor(Math.random() * samples.length)];
+    });
+
+    // File Drag & Drop & Async Processing
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const dropzoneText = document.getElementById('dropzone-text');
+    const btnStartProcess = document.getElementById('btn-start-process');
+    let selectedFile = null;
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      if (!file.name.endsWith('.csv')) {
+        alert('Пожалуйста, выберите файл с расширением .csv');
+        return;
+      }
+      selectedFile = file;
+      dropzoneText.innerText = `Выбран файл: ${file.name} (${Math.round(file.size / 1024)} КБ)`;
+      btnStartProcess.disabled = false;
+      btnStartProcess.style.opacity = '1';
+    }
+
+    // Process Task
+    btnStartProcess.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      const modelId = document.getElementById('file-model-select').value;
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('model_id', modelId);
+
+      btnStartProcess.disabled = true;
+      btnStartProcess.style.opacity = '0.5';
+
+      const taskWidget = document.getElementById('task-widget');
+      const taskBarFill = document.getElementById('task-bar-fill');
+      const taskPercentage = document.getElementById('task-percentage');
+      const taskRowsText = document.getElementById('task-rows-text');
+      const taskDownloadBtn = document.getElementById('task-download-btn');
+
+      taskWidget.style.display = 'block';
+      taskDownloadBtn.style.display = 'none';
+      taskBarFill.style.width = '0%';
+      taskPercentage.innerText = '0%';
+
+      try {
+        const res = await fetch(`${API_BASE}/files/process`, {
+          method: 'POST',
+          body: formData
+        });
+        const task = await res.json();
+        const taskId = task.task_id;
+
+        // Poll progress
+        const poller = setInterval(async () => {
+          try {
+            const pRes = await fetch(`${API_BASE}/files/tasks/${taskId}`);
+            const pData = await pRes.json();
+
+            taskBarFill.style.width = `${pData.progress_percentage}%`;
+            taskPercentage.innerText = `${pData.progress_percentage}%`;
+            taskRowsText.innerText = `${pData.processed_rows} / ${pData.total_rows} строк`;
+
+            if (pData.status === 'completed') {
+              clearInterval(poller);
+              document.getElementById('task-status-title').innerText = 'Обработка завершена!';
+              taskDownloadBtn.style.display = 'inline-block';
+              taskDownloadBtn.href = `${API_BASE}/files/tasks/${taskId}/download`;
+              taskDownloadBtn.download = `result_${selectedFile.name}`;
+            }
+          } catch (err) {
+            clearInterval(poller);
+          }
+        }, 300);
+      } catch (err) {
+        alert('Ошибка отправки файла: ' + err.message);
+      }
+    });
+
+    // Generate Dummy CSV
+    document.getElementById('btn-create-dummy-csv').addEventListener('click', () => {
+      const csvData = "text\nОтличный инструмент для академических исследований.\nУжасный сервис, все сломалось.\nНейтральный комментарий без эмоций.\nОчень удобная десктопная программа с понятным интерфейсом.\nКачество обслуживания оставляет желать лучшего.";
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      const file = new File([blob], 'demo_comments.csv', { type: 'text/csv' });
+      handleFileSelect(file);
+    });
+
+    // Load Catalog
+    async function loadModelsCatalog() {
+      const listEl = document.getElementById('models-list');
+      listEl.innerHTML = '<div style="color: var(--text-muted);">Загрузка каталога...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/models`);
+        const data = await res.json();
+        document.getElementById('models-count').innerText = `Всего моделей: ${data.total}`;
+        listEl.innerHTML = '';
+
+        data.items.forEach(m => {
+          const card = document.createElement('div');
+          card.style.background = 'rgba(7, 16, 27, 0.5)';
+          card.style.border = '1px solid var(--border-subtle)';
+          card.style.borderRadius = 'var(--radius-subcard)';
+          card.style.padding = '18px';
+          card.style.display = 'flex';
+          card.style.flexDirection = 'column';
+          card.style.gap = '8px';
+
+          card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <span style="font-weight: 700; color: var(--accent-ice); font-size: 14px;">${m.name}</span>
+              <span style="font-size: 11px; padding: 2px 8px; border-radius: var(--radius-pill); background: rgba(84, 172, 191, 0.2); color: var(--accent-cyan); text-transform: uppercase;">${m.languages.join(', ')}</span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">${m.description}</p>
+            <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;">
+              <span>Классы: ${m.labels.slice(0, 3).join(', ')}${m.labels.length > 3 ? '...' : ''}</span>
+              <span style="color: var(--success);">Готова</span>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+      } catch (err) {
+        listEl.innerHTML = '<div style="color: var(--danger);">Ошибка загрузки каталога</div>';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -46,3 +46,6 @@ scratch/
 tmp/
 
 data/
+
+frontend/node_modules/
+frontend/release/

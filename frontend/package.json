@@ -1,0 +1,48 @@
+{
+  "name": "text-analysis-desktop",
+  "version": "0.1.0",
+  "description": "Desktop application for social media text analysis using NLP models",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.textanalysis.app",
+    "productName": "TextAnalysisApp",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Text Analysis Studio"
+    },
+    "extraResources": [
+      {
+        "from": "../dist/text-analysis-backend",
+        "to": "backend"
+      }
+    ],
+    "files": [
+      "electron-main.js",
+      "index.html",
+      "package.json"
+    ]
+  },
+  "author": "CatGamer7 & Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  }
+}

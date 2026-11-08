@@ -1,10 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller specification for packaging the Text Analysis Backend
 
-import sys
+import os
+from pathlib import Path
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 
 block_cipher = None
+
+# SPECPATH is provided by PyInstaller
+BASE_DIR = Path(SPECPATH).parent.resolve()
 
 hidden_imports = [
     "uvicorn",
@@ -21,16 +25,18 @@ hidden_imports = [
     "fastapi",
     "pydantic",
     "pydantic_settings",
+    "multipart",
+    "python_multipart",
 ]
 hidden_imports += collect_submodules("app")
 
 datas = [
-    ("docs", "docs"),
+    (str(BASE_DIR / "docs"), "docs"),
 ]
 
 a = Analysis(
-    ["../run.py"],
-    pathex=[".."],
+    [str(BASE_DIR / "run.py")],
+    pathex=[str(BASE_DIR)],
     binaries=[],
     datas=datas,
     hiddenimports=hidden_imports,
@@ -55,7 +61,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
@@ -70,7 +76,7 @@ coll = COLLECT(
     a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     name="text-analysis-backend",
 )
