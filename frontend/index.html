@@ -738,25 +738,43 @@
     navFiles.addEventListener('click', () => switchView('files'));
     navModels.addEventListener('click', () => switchView('models'));
 
-    // Backend Health Check
+    // Backend Health Check (fast polling during startup)
+    let isBackendOnline = false;
+    let healthTimer = null;
+
     async function checkHealth() {
+      const dot1 = document.getElementById('backend-status-dot');
+      const dot2 = document.getElementById('backend-badge-dot');
+      const textEl = document.getElementById('backend-status-text');
+
       try {
         const res = await fetch(`${API_BASE}/health`);
         if (res.ok) {
-          document.getElementById('backend-status-dot').classList.remove('offline');
-          document.getElementById('backend-badge-dot').classList.remove('offline');
-          document.getElementById('backend-status-text').innerText = 'Сервер активен (8000)';
+          isBackendOnline = true;
+          dot1.classList.remove('offline');
+          dot2.classList.remove('offline');
+          dot1.style.backgroundColor = '';
+          dot2.style.backgroundColor = '';
+          textEl.innerText = 'Сервер активен (8000)';
+          scheduleHealthCheck(4000);
         } else {
           throw new Error();
         }
       } catch (e) {
-        document.getElementById('backend-status-dot').classList.add('offline');
-        document.getElementById('backend-badge-dot').classList.add('offline');
-        document.getElementById('backend-status-text').innerText = 'Сервер недоступен';
+        isBackendOnline = false;
+        dot1.classList.add('offline');
+        dot2.classList.add('offline');
+        textEl.innerText = 'Подключение к серверу...';
+        scheduleHealthCheck(800);
       }
     }
+
+    function scheduleHealthCheck(ms) {
+      if (healthTimer) clearTimeout(healthTimer);
+      healthTimer = setTimeout(checkHealth, ms);
+    }
+
     checkHealth();
-    setInterval(checkHealth, 3000);
 
     // Probing Inference
     const btnProbe = document.getElementById('btn-probe-exec');

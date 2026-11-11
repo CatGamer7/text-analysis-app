@@ -2,6 +2,8 @@ import asyncio
 import csv
 import io
 import json
+import os
+import tempfile
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,11 +14,18 @@ from app.services.inference import inference_service
 from app.services.model_registry import model_registry
 
 
+def _default_storage_dir() -> Path:
+    env_dir = os.environ.get("APP_TASKS_DIR")
+    if env_dir:
+        return Path(env_dir)
+    return Path(tempfile.gettempdir()) / "text-analysis-studio" / "tasks"
+
+
 class FileTaskService:
     """Service managing asynchronous CSV file processing with ML models."""
 
-    def __init__(self, storage_dir: str = "data/tasks"):
-        self.storage_dir = Path(storage_dir)
+    def __init__(self, storage_dir: Optional[str] = None):
+        self.storage_dir = Path(storage_dir) if storage_dir else _default_storage_dir()
         self.storage_dir.mkdir(parents=True, exist_ok=True)
         self._tasks: Dict[str, dict] = {}
 
