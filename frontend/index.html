@@ -3,34 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text Analysis Studio</title>
+  <title>Text Analysis Studio — Рабочее место исследователя</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #07101B;
-      --bg-surface: #0B192C;
-      --bg-surface-elevated: #112239;
-      --border-subtle: rgba(84, 172, 191, 0.16);
-      --border-focus: rgba(167, 235, 242, 0.45);
-      
-      --accent-deep: #023859;
-      --accent-mid: #26658C;
-      --accent-cyan: #54ACBF;
-      --accent-ice: #A7EBF2;
-      
-      --text-primary: #F0F6FC;
-      --text-secondary: #8B9BB4;
-      --text-muted: #5C6E87;
-      
-      --success: #38D9A9;
-      --danger: #FF6B6B;
-      --warning: #FCC419;
+      /* Formal Business / Academic Design System (No AI-slop, no neon glows, no pill soup) */
+      --bg-base: #0D1117;
+      --bg-surface: #161B22;
+      --bg-surface-raised: #21262D;
+      --bg-surface-hover: #292E36;
+      --bg-input: #0D1117;
 
-      --radius-pill: 9999px;
-      --radius-card: 20px;
-      --radius-subcard: 14px;
+      --border-default: #30363D;
+      --border-subtle: #21262D;
+      --border-focus: #388BFD;
+
+      --text-primary: #F0F6FC;
+      --text-secondary: #8B949E;
+      --text-muted: #6E7681;
+
+      --accent: #238636; /* Formal calm green for action */
+      --accent-hover: #2EA043;
+      --accent-blue: #1F6FEB; /* Professional steel-blue */
+      --accent-blue-hover: #388BFD;
+
+      --status-ready: #3FB950;
+      --status-warning: #D29922;
+      --status-error: #F85149;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
     }
 
     * {
@@ -40,745 +48,829 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-dark);
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
       color: var(--text-primary);
       height: 100vh;
       overflow: hidden;
       display: flex;
-    }
-
-    /* Left Sidebar: Minimalist Pill Navigation */
-    .sidebar {
-      width: 90px;
-      padding: 24px 16px;
-      display: flex;
       flex-direction: column;
-      align-items: center;
-      background: linear-gradient(180deg, rgba(11, 25, 44, 0.8) 0%, rgba(7, 16, 27, 0.95) 100%);
-      border-right: 1px solid var(--border-subtle);
-      backdrop-filter: blur(20px);
+      -webkit-font-smoothing: antialiased;
     }
 
-    .brand-pill {
-      width: 48px;
+    /* 1. Header (Formal App Toolbar) */
+    .app-header {
       height: 48px;
-      border-radius: var(--radius-pill);
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-deep));
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-default);
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 40px;
-      box-shadow: 0 8px 24px rgba(84, 172, 191, 0.25);
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
     }
 
-    .brand-pill svg {
-      width: 24px;
-      height: 24px;
-      fill: #fff;
-    }
-
-    .nav-container {
-      background: rgba(17, 34, 57, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-pill);
-      padding: 10px 8px;
+    .brand-section {
       display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .nav-item {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-
-    .nav-item:hover {
-      color: var(--accent-ice);
-      background: rgba(84, 172, 191, 0.12);
-    }
-
-    .nav-item.active {
-      color: #fff;
-      background: linear-gradient(135deg, rgba(84, 172, 191, 0.35), rgba(38, 101, 140, 0.5));
-      box-shadow: 0 4px 16px rgba(84, 172, 191, 0.3);
-      border: 1px solid rgba(167, 235, 242, 0.3);
-    }
-
-    .nav-item svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 2;
-      fill: none;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 12px;
     }
 
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+      fill: var(--text-primary);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border-default);
+      padding-left: 12px;
+      margin-left: 4px;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background-color: var(--success);
-      box-shadow: 0 0 12px var(--success);
-      transition: all 0.3s ease;
+      background-color: var(--status-ready);
     }
 
     .status-dot.offline {
-      background-color: var(--danger);
-      box-shadow: 0 0 12px var(--danger);
+      background-color: var(--status-error);
     }
 
-    /* Main Bento Content Area */
-    .main-wrapper {
+    .status-dot.connecting {
+      background-color: var(--status-warning);
+    }
+
+    /* 2. Main Workspace Layout */
+    .workspace-layout {
+      display: flex;
       flex: 1;
-      padding: 28px 32px;
-      overflow-y: auto;
+      height: calc(100vh - 48px);
+      overflow: hidden;
+    }
+
+    /* Left Sidebar: Standard Desktop Side Navigation */
+    .app-sidebar {
+      width: 240px;
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-default);
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      padding: 12px 8px;
+      flex-shrink: 0;
     }
 
-    /* Top Bar */
-    .topbar {
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 12px 6px 12px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-link:hover {
+      background-color: var(--bg-surface-raised);
+      color: var(--text-primary);
+    }
+
+    .nav-link.active {
+      background-color: var(--bg-surface-raised);
+      border-color: var(--border-default);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .nav-link svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 12px;
+      border-top: 1px solid var(--border-default);
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      padding: 24px 32px;
+      overflow-y: auto;
+      background-color: var(--bg-base);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-header {
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
     }
 
-    .topbar-title h1 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #FFFFFF 0%, var(--accent-ice) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
     }
 
-    .topbar-title p {
+    .section-description {
       font-size: 13px;
       color: var(--text-secondary);
       margin-top: 4px;
     }
 
-    .backend-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(17, 34, 57, 0.7);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-pill);
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    /* Bento Grid Layout */
-    .bento-grid {
+    /* Two-column Structured Workbench Grid */
+    .workbench-grid {
       display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      grid-template-rows: auto auto;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
-      flex: 1;
+      align-items: start;
     }
 
-    .bento-card {
-      background: rgba(11, 25, 44, 0.7);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 24px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      transition: border-color 0.25s ease;
-    }
-
-    .bento-card:hover {
-      border-color: rgba(84, 172, 191, 0.3);
+    /* Panels & Cards */
+    .card-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow: hidden;
     }
 
     .card-header {
+      padding: 12px 16px;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-default);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      justify-content: space-between;
     }
 
-    .card-title {
-      font-size: 16px;
+    .card-header-title {
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .card-title svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--accent-cyan);
+    .card-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    /* Input Controls */
-    .form-group {
-      margin-bottom: 16px;
+    /* Form Inputs */
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    label {
-      display: block;
+    .form-label {
       font-size: 12px;
       font-weight: 500;
       color: var(--text-secondary);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     select, textarea, input[type="text"] {
       width: 100%;
-      background: rgba(7, 16, 27, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-subcard);
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-family: inherit;
-      font-size: 14px;
-      padding: 12px 16px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      padding: 8px 12px;
       outline: none;
-      transition: all 0.2s ease;
+      transition: border-color 0.15s ease;
     }
 
     select:focus, textarea:focus, input[type="text"]:focus {
-      border-color: var(--accent-ice);
-      box-shadow: 0 0 0 3px rgba(84, 172, 191, 0.15);
+      border-color: var(--border-focus);
     }
 
     textarea {
-      resize: none;
-      height: 110px;
+      resize: vertical;
+      min-height: 120px;
       line-height: 1.5;
     }
 
-    /* Action Buttons */
-    .btn-pill {
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: var(--radius-pill);
-      border: none;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 600;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
       cursor: pointer;
-      transition: all 0.25s ease;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-mid));
-      color: #fff;
-      box-shadow: 0 6px 20px rgba(84, 172, 191, 0.35);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      text-decoration: none;
     }
 
-    .btn-pill:hover {
-      background: linear-gradient(135deg, var(--accent-ice), var(--accent-cyan));
-      color: var(--bg-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 25px rgba(167, 235, 242, 0.4);
+    .btn-primary {
+      background-color: var(--accent-blue);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
-    .btn-pill:active {
-      transform: translateY(0);
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-blue-hover);
     }
 
     .btn-secondary {
-      background: rgba(17, 34, 57, 0.8);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      box-shadow: none;
+      background-color: var(--bg-surface-raised);
+      color: var(--text-primary);
+      border-color: var(--border-default);
     }
 
-    .btn-secondary:hover {
-      background: rgba(38, 101, 140, 0.4);
-      color: #fff;
-      border-color: var(--accent-cyan);
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--bg-surface-hover);
     }
 
-    /* Result Preview Card */
-    .results-container {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .primary-metric {
-      background: rgba(7, 16, 27, 0.5);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-subcard);
-      padding: 16px;
+    /* Quantitative Results Presentation */
+    .summary-box {
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      background-color: var(--bg-base);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .metric-label {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .metric-value {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent-ice);
+    .summary-item-label {
+      font-size: 11px;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .prob-bar-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .summary-item-value {
+      font-size: 16px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      margin-top: 2px;
+      color: var(--text-primary);
     }
 
-    .prob-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 13px;
     }
 
-    .prob-name {
-      width: 80px;
-      color: var(--text-secondary);
-      text-transform: capitalize;
-    }
-
-    .prob-track {
-      flex: 1;
-      height: 8px;
-      background: rgba(7, 16, 27, 0.8);
-      border-radius: var(--radius-pill);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .prob-fill {
-      height: 100%;
-      border-radius: var(--radius-pill);
-      background: linear-gradient(90deg, var(--accent-mid), var(--accent-cyan));
-      width: 0%;
-      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .prob-pct {
-      width: 50px;
-      text-align: right;
+    .data-table th {
+      text-align: left;
+      font-size: 11px;
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-default);
     }
 
-    /* File Drag & Drop Zone */
-    .dropzone {
-      border: 2px dashed rgba(84, 172, 191, 0.25);
-      border-radius: var(--radius-subcard);
-      padding: 30px 20px;
+    .data-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .prob-bar-container {
+      width: 100%;
+      height: 6px;
+      background-color: var(--bg-surface-raised);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      background-color: var(--accent-blue);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .meta-footer {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    /* CSV File Batch Area */
+    .file-drop-area {
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 32px 20px;
       text-align: center;
-      background: rgba(7, 16, 27, 0.3);
+      background-color: rgba(255, 255, 255, 0.01);
       cursor: pointer;
-      transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
-    .dropzone:hover, .dropzone.dragover {
-      border-color: var(--accent-ice);
-      background: rgba(84, 172, 191, 0.08);
+    .file-drop-area:hover, .file-drop-area.dragover {
+      border-color: var(--border-focus);
+      background-color: var(--bg-surface-raised);
     }
 
-    .dropzone svg {
-      width: 36px;
-      height: 36px;
-      stroke: var(--accent-cyan);
-    }
-
-    .dropzone-text {
-      font-size: 14px;
-      color: var(--text-primary);
+    .file-drop-title {
+      font-size: 13px;
       font-weight: 500;
+      color: var(--text-primary);
     }
 
-    .dropzone-sub {
+    .file-drop-hint {
       font-size: 12px;
       color: var(--text-muted);
     }
 
-    /* Progress Display */
-    .task-card {
-      margin-top: 14px;
-      padding: 16px;
-      border-radius: var(--radius-subcard);
-      background: rgba(7, 16, 27, 0.6);
-      border: 1px solid var(--border-subtle);
+    .task-status-card {
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background-color: var(--bg-base);
       display: none;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .task-header {
+    .task-status-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
       font-size: 13px;
     }
 
-    .progress-bar {
-      height: 6px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--success));
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-
-    /* Hidden Sections */
-    .view-panel {
-      display: none;
+    .task-progress-track {
       width: 100%;
-      height: 100%;
+      height: 6px;
+      background-color: var(--bg-surface-raised);
+      border-radius: 2px;
+      overflow: hidden;
     }
 
-    .view-panel.active-panel {
+    .task-progress-bar {
+      height: 100%;
+      background-color: var(--status-ready);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    /* Model Catalog Cards */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+
+    .model-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      flex: 1;
+      gap: 10px;
     }
 
-    /* Subtle Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
+    .model-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+
+    .model-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
     }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(84, 172, 191, 0.2);
-      border-radius: var(--radius-pill);
+
+    .tag-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-surface-raised);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      white-space: nowrap;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(84, 172, 191, 0.4);
+
+    .model-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .model-meta-row {
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    /* Views Switcher */
+    .view-content {
+      display: none;
+      width: 100%;
+    }
+
+    .view-content.active-view {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- Left Sidebar (Luna Palette & Minimalist Iconsax style) -->
-  <aside class="sidebar">
-    <div class="brand-pill" title="Text Analysis Studio">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+  <!-- 1. Formal App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <svg class="brand-icon" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
+      <span class="brand-title">Text Analysis Studio</span>
+      <span class="brand-subtitle">Аналитический комплекс для социологических исследований</span>
     </div>
+    <div class="header-status">
+      <div class="status-indicator">
+        <div class="status-dot connecting" id="status-dot"></div>
+        <span id="status-label">Проверка связи...</span>
+      </div>
+      <span>Хост: 127.0.0.1:8000</span>
+      <span>Версия: 0.1.0</span>
+    </div>
+  </header>
 
-    <div class="nav-container">
-      <button class="nav-item active" id="nav-probe" title="Апробация моделей">
+  <!-- 2. Workspace Layout -->
+  <div class="workspace-layout">
+    
+    <!-- Desktop Side Navigation -->
+    <aside class="app-sidebar">
+      <div class="nav-section-title">Исследования</div>
+      <button class="nav-link active" id="tab-btn-probe">
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Апробация моделей
       </button>
-      <button class="nav-item" id="nav-files" title="Обработка CSV файлов">
+      <button class="nav-link" id="tab-btn-files">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Пакетная обработка
       </button>
-      <button class="nav-item" id="nav-models" title="Каталог моделей">
+
+      <div class="nav-section-title">Конфигурация</div>
+      <button class="nav-link" id="tab-btn-models">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Реестр моделей
       </button>
-    </div>
 
-    <div class="sidebar-footer">
-      <div class="status-dot" id="backend-status-dot" title="Бэкенд активен"></div>
-    </div>
-  </aside>
-
-  <!-- Main Content Wrapper -->
-  <main class="main-wrapper">
-    <div class="topbar">
-      <div class="topbar-title">
-        <h1 id="view-title">Окно апробации моделей</h1>
-        <p id="view-desc">Мгновенный анализ единичных текстов социальных сетей</p>
+      <div class="sidebar-footer">
+        Академический проект анализа данных социальных медиа (РУ / EN).
       </div>
-      <div class="backend-badge">
-        <div class="status-dot" id="backend-badge-dot"></div>
-        <span id="backend-status-text">Сервер: 127.0.0.1:8000</span>
-      </div>
-    </div>
+    </aside>
 
-    <!-- VIEW 1: PROBING -->
-    <section class="view-panel active-panel" id="panel-probe">
-      <div class="bento-grid">
-        <!-- Input Bento Card -->
-        <div class="bento-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Ввод текста и выбор модели
-            </h2>
-          </div>
+    <!-- Main Workspace Content -->
+    <main class="content-area">
 
-          <div class="form-group">
-            <label>Языковая модель</label>
-            <select id="probe-model-select">
-              <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский)</option>
-              <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English)</option>
-              <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский)</option>
-              <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский)</option>
-              <option value="distilbert-emotion-en">DistilBERT Emotion Classifier (English)</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
-            <label>Текст для анализа</label>
-            <textarea id="probe-text-input" placeholder="Введите короткий комментарий, отзыв или твит...">Проект получился отличный, интерфейс понятный и отзывчивый!</textarea>
-          </div>
-
-          <div style="display: flex; gap: 12px; margin-top: auto;">
-            <button class="btn-pill" id="btn-probe-exec">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Оценить моделью
-            </button>
-            <button class="btn-pill btn-secondary" id="btn-sample-fill">Тестовый пример</button>
+      <!-- VIEW 1: PROBING -->
+      <section class="view-content active-view" id="view-probe">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Апробация языковых моделей</h1>
+            <p class="section-description">Индивидуальная оценка текстовых фрагментов и проверка классификаторов</p>
           </div>
         </div>
 
-        <!-- Output Bento Card -->
-        <div class="bento-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              Результат классификации
-            </h2>
-            <span style="font-size: 12px; color: var(--text-muted);" id="latency-text">0.0 мс</span>
-          </div>
-
-          <div class="results-container">
-            <div class="primary-metric">
-              <div>
-                <div class="metric-label">Главный класс</div>
-                <div class="metric-value" id="res-primary-label">—</div>
+        <div class="workbench-grid">
+          <!-- Input Card -->
+          <div class="card-panel">
+            <div class="card-header">
+              <span class="card-header-title">Входные данные</span>
+              <span style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted);" id="input-char-count">0 симв.</span>
+            </div>
+            <div class="card-body">
+              <div class="form-field">
+                <label class="form-label">Целевая модель классификации</label>
+                <select id="probe-model-select">
+                  <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский, тональность)</option>
+                  <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English, sentiment)</option>
+                  <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский, токсичность)</option>
+                  <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский, эмоции)</option>
+                  <option value="distilbert-emotion-en">DistilBERT Emotion Classifier (English, emotions)</option>
+                </select>
               </div>
-              <div style="text-align: right;">
-                <div class="metric-label">Уверенность</div>
-                <div class="metric-value" id="res-confidence" style="color: var(--accent-cyan);">0%</div>
+
+              <div class="form-field">
+                <label class="form-label">Текст для экспертной оценки</label>
+                <textarea id="probe-text-input" placeholder="Введите текст комментария, отзыва или публикации...">Проект получился отличный, интерфейс понятный и отзывчивый!</textarea>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-primary" id="btn-probe-exec">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Выполнить инференс
+                </button>
+                <button class="btn btn-secondary" id="btn-sample-fill">Заполнить образцом</button>
               </div>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label>Распределение вероятностей</label>
-              <div class="prob-bar-group" id="prob-bars">
-                <div style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 24px 0;">
-                  Нажмите «Оценить моделью» для инференса
+          <!-- Output Card -->
+          <div class="card-panel">
+            <div class="card-header">
+              <span class="card-header-title">Результаты инференса</span>
+              <span style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary);" id="latency-text">0.00 мс</span>
+            </div>
+            <div class="card-body">
+              <div class="summary-box">
+                <div>
+                  <div class="summary-item-label">Доминирующий класс</div>
+                  <div class="summary-item-value" id="res-primary-label">—</div>
+                </div>
+                <div style="text-align: right;">
+                  <div class="summary-item-label">Достоверность оценки</div>
+                  <div class="summary-item-value" id="res-confidence" style="color: var(--accent-blue-hover);">—</div>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label">Распределение апостериорных вероятностей</label>
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 110px;">Метка класса</th>
+                      <th>Распределение</th>
+                      <th style="width: 60px; text-align: right;">Доля</th>
+                    </tr>
+                  </thead>
+                  <tbody id="prob-table-body">
+                    <tr>
+                      <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 24px 0;">
+                        Ожидание запуска вычислений
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="meta-footer">
+                <span id="token-count-text">Объём входа: —</span>
+                <span id="device-text">Аппаратный контекст: CPU</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: CSV PROCESSING -->
+      <section class="view-content" id="view-files">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Пакетная обработка массивов текстов</h1>
+            <p class="section-description">Асинхронный конвейер разметки CSV файлов строгой структуры</p>
+          </div>
+        </div>
+
+        <div class="workbench-grid">
+          <div class="card-panel">
+            <div class="card-header">
+              <span class="card-header-title">Параметры пакетной задачи</span>
+            </div>
+            <div class="card-body">
+              <div class="form-field">
+                <label class="form-label">Назначенная языковая модель</label>
+                <select id="file-model-select">
+                  <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский, тональность)</option>
+                  <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский, детекция агрессии)</option>
+                  <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский, базовые эмоции)</option>
+                  <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English)</option>
+                </select>
+              </div>
+
+              <input type="file" id="file-input" accept=".csv" style="display: none;">
+              <div class="file-drop-area" id="dropzone">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="color: var(--text-secondary);">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <div class="file-drop-title" id="dropzone-text">Выберите входной CSV файл или перетащите его сюда</div>
+                <div class="file-drop-hint">Строгий формат: 1 колонка текстов, кодировка UTF-8 или CP1251</div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-primary" id="btn-start-process" disabled>
+                  Начать пакетную обработку
+                </button>
+                <button class="btn btn-secondary" id="btn-create-dummy-csv">Сформировать тестовый CSV</button>
+              </div>
+
+              <!-- Task Progress Card -->
+              <div class="task-status-card" id="task-widget">
+                <div class="task-status-row">
+                  <span style="font-weight: 500;" id="task-status-title">Выполняется пакетная обработка...</span>
+                  <span style="font-family: var(--font-mono); font-weight: 600;" id="task-percentage">0.0%</span>
+                </div>
+                <div class="task-progress-track">
+                  <div class="task-progress-bar" id="task-bar-fill"></div>
+                </div>
+                <div class="task-status-row" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary);">
+                  <span id="task-rows-text">0 / 0 записей</span>
+                  <a href="#" id="task-download-btn" style="color: var(--accent-blue-hover); display: none; text-decoration: none; font-weight: 600;">Скачать результат (CSV)</a>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div style="margin-top: auto; padding: 12px; border-radius: var(--radius-subcard); background: rgba(7, 16, 27, 0.4); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
-              <span id="token-count-text">Токенов: —</span>
-              <span id="device-text">Режим: CPU</span>
+          <!-- Documentation / Standard Spec -->
+          <div class="card-panel">
+            <div class="card-header">
+              <span class="card-header-title">Технические требования к данным</span>
+            </div>
+            <div class="card-body" style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+              <p><strong>Спецификация входного файла:</strong> Файл в формате CSV (RFC 4180), содержащий 1 текстовую колонку. Наличие заголовка (<code>text</code>, <code>comment</code>) определяется автоматически.</p>
+              <p><strong>Асинхронный протокол:</strong> Запрос ставится в системную очередь с выдачей <code>task_id</code>. Фоновый поток выполняет последовательный инференс без блокировки UI.</p>
+              <p><strong>Формат выгрузки:</strong> Результирующий файл дополняется тремя столбцами: <code>predicted_label</code> (оценка), <code>confidence</code> (вероятность) и <code>probabilities_json</code> (детальный спектр классов).</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- VIEW 2: CSV PROCESSING -->
-    <section class="view-panel" id="panel-files">
-      <div class="bento-grid">
-        <div class="bento-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Пакетная обработка CSV
-            </h2>
+      <!-- VIEW 3: CATALOG -->
+      <section class="view-content" id="view-models">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Реестр открытых языковых моделей</h1>
+            <p class="section-description">Паспортные данные и спецификации валидированных моделей комплекса</p>
           </div>
-
-          <div class="form-group">
-            <label>Целевая модель</label>
-            <select id="file-model-select">
-              <option value="rubert-sentiment-conversational">RuBERT Conversational Sentiment (Русский)</option>
-              <option value="rubert-toxicity-ru">RuBERT Toxicity & Hate Speech (Русский)</option>
-              <option value="rubert-emotion-ru">RuBERT Emotion Classifier (Русский)</option>
-              <option value="roberta-sentiment-en">Twitter-RoBERTa Sentiment (English)</option>
-            </select>
-          </div>
-
-          <input type="file" id="file-input" accept=".csv" style="display: none;">
-          <div class="dropzone" id="dropzone">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <div class="dropzone-text" id="dropzone-text">Перетащите CSV файл или нажмите для выбора</div>
-            <div class="dropzone-sub">Формат: 1 столбец текстов (UTF-8 или CP1251)</div>
-          </div>
-
-          <div style="margin-top: 20px;">
-            <button class="btn-pill" id="btn-start-process" disabled style="opacity: 0.5;">
-              Запустить обработку
-            </button>
-          </div>
-
-          <!-- Progress Widget -->
-          <div class="task-card" id="task-widget">
-            <div class="task-header">
-              <span id="task-status-title" style="font-weight: 600;">Обработка массива...</span>
-              <span id="task-percentage" style="color: var(--accent-ice); font-weight: 700;">0%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="task-bar-fill"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
-              <span id="task-rows-text">0 / 0 строк</span>
-              <a href="#" id="task-download-btn" style="color: var(--accent-cyan); display: none; text-decoration: none; font-weight: 600;">Скачать результат</a>
-            </div>
-          </div>
+          <span class="tag-badge" id="models-count">Синхронизация...</span>
         </div>
 
-        <div class="bento-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              Требования и формат данных
-            </h2>
-          </div>
-          <div style="font-size: 13px; line-height: 1.6; color: var(--text-secondary); display: flex; flex-direction: column; gap: 14px;">
-            <p><strong>Формат:</strong> Файл <code>.csv</code> с одним столбцом текстовых данных (отзывы, комментарии или твиты).</p>
-            <p><strong>Асинхронность:</strong> Обработка выполняется в фоновом режиме сервера с сохранением стабильности интерфейса.</p>
-            <p><strong>Результат:</strong> Итоговый CSV дополняется столбцами <code>predicted_label</code>, <code>confidence</code> и вероятностями классов.</p>
-            <div style="margin-top: auto; padding: 14px; background: rgba(7, 16, 27, 0.4); border-radius: var(--radius-subcard); border: 1px solid var(--border-subtle);">
-              <div style="font-weight: 600; color: var(--accent-ice); margin-bottom: 4px;">Быстрая генерация примера</div>
-              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Создать тестовый CSV прямо в браузере для проверки:</p>
-              <button class="btn-pill btn-secondary" id="btn-create-dummy-csv" style="width: 100%; font-size: 13px; padding: 8px 14px;">Сгенерировать demo_comments.csv</button>
-            </div>
-          </div>
+        <div class="catalog-grid" id="models-list">
+          <div style="color: var(--text-muted); font-size: 13px;">Загрузка реестра моделей...</div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- VIEW 3: CATALOG -->
-    <section class="view-panel" id="panel-models">
-      <div class="bento-card" style="height: 100%;">
-        <div class="card-header">
-          <h2 class="card-title">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-            Реестр моделей для исследований
-          </h2>
-          <span style="font-size: 13px; color: var(--accent-ice);" id="models-count">Загрузка...</span>
-        </div>
-        <div id="models-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 4px;">
-        </div>
-      </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script>
     const API_BASE = 'http://127.0.0.1:8000/api/v1';
 
     // Navigation Switcher
-    const navProbe = document.getElementById('nav-probe');
-    const navFiles = document.getElementById('nav-files');
-    const navModels = document.getElementById('nav-models');
+    const tabProbe = document.getElementById('tab-btn-probe');
+    const tabFiles = document.getElementById('tab-btn-files');
+    const tabModels = document.getElementById('tab-btn-models');
 
-    const panelProbe = document.getElementById('panel-probe');
-    const panelFiles = document.getElementById('panel-files');
-    const panelModels = document.getElementById('panel-models');
-
-    const viewTitle = document.getElementById('view-title');
-    const viewDesc = document.getElementById('view-desc');
+    const viewProbe = document.getElementById('view-probe');
+    const viewFiles = document.getElementById('view-files');
+    const viewModels = document.getElementById('view-models');
 
     function switchView(view) {
-      [navProbe, navFiles, navModels].forEach(b => b.classList.remove('active'));
-      [panelProbe, panelFiles, panelModels].forEach(p => p.classList.remove('active-panel'));
+      [tabProbe, tabFiles, tabModels].forEach(btn => btn.classList.remove('active'));
+      [viewProbe, viewFiles, viewModels].forEach(p => p.classList.remove('active-view'));
 
       if (view === 'probe') {
-        navProbe.classList.add('active');
-        panelProbe.classList.add('active-panel');
-        viewTitle.innerText = 'Окно апробации моделей';
-        viewDesc.innerText = 'Мгновенный анализ единичных текстов социальных сетей';
+        tabProbe.classList.add('active');
+        viewProbe.classList.add('active-view');
       } else if (view === 'files') {
-        navFiles.classList.add('active');
-        panelFiles.classList.add('active-panel');
-        viewTitle.innerText = 'Окно обработки массивов текстов';
-        viewDesc.innerText = 'Асинхронный анализ CSV файлов с расчетом прогресса';
+        tabFiles.classList.add('active');
+        viewFiles.classList.add('active-view');
       } else if (view === 'models') {
-        navModels.classList.add('active');
-        panelModels.classList.add('active-panel');
-        viewTitle.innerText = 'Каталог доступных моделей';
-        viewDesc.innerText = 'Спецификации открытых моделей для русского и английского языков';
+        tabModels.classList.add('active');
+        viewModels.classList.add('active-view');
         loadModelsCatalog();
       }
     }
 
-    navProbe.addEventListener('click', () => switchView('probe'));
-    navFiles.addEventListener('click', () => switchView('files'));
-    navModels.addEventListener('click', () => switchView('models'));
+    tabProbe.addEventListener('click', () => switchView('probe'));
+    tabFiles.addEventListener('click', () => switchView('files'));
+    tabModels.addEventListener('click', () => switchView('models'));
 
-    // Backend Health Check (fast polling during startup)
-    let isBackendOnline = false;
+    // Backend Connectivity Monitor
     let healthTimer = null;
-
     async function checkHealth() {
-      const dot1 = document.getElementById('backend-status-dot');
-      const dot2 = document.getElementById('backend-badge-dot');
-      const textEl = document.getElementById('backend-status-text');
+      const dot = document.getElementById('status-dot');
+      const label = document.getElementById('status-label');
 
       try {
         const res = await fetch(`${API_BASE}/health`);
         if (res.ok) {
-          isBackendOnline = true;
-          dot1.classList.remove('offline');
-          dot2.classList.remove('offline');
-          dot1.style.backgroundColor = '';
-          dot2.style.backgroundColor = '';
-          textEl.innerText = 'Сервер активен (8000)';
-          scheduleHealthCheck(4000);
+          dot.className = 'status-dot';
+          label.innerText = 'Сервер активен';
+          scheduleCheck(4000);
         } else {
           throw new Error();
         }
       } catch (e) {
-        isBackendOnline = false;
-        dot1.classList.add('offline');
-        dot2.classList.add('offline');
-        textEl.innerText = 'Подключение к серверу...';
-        scheduleHealthCheck(800);
+        dot.className = 'status-dot connecting';
+        label.innerText = 'Подключение к ядру...';
+        scheduleCheck(800);
       }
     }
 
-    function scheduleHealthCheck(ms) {
+    function scheduleCheck(ms) {
       if (healthTimer) clearTimeout(healthTimer);
       healthTimer = setTimeout(checkHealth, ms);
     }
-
     checkHealth();
 
-    // Probing Inference
-    const btnProbe = document.getElementById('btn-probe-exec');
+    // Input character counter
     const probeTextInput = document.getElementById('probe-text-input');
+    const inputCharCount = document.getElementById('input-char-count');
+    function updateCharCount() {
+      inputCharCount.innerText = `${probeTextInput.value.length} симв.`;
+    }
+    probeTextInput.addEventListener('input', updateCharCount);
+    updateCharCount();
+
+    // Single Probe Inference
+    const btnProbe = document.getElementById('btn-probe-exec');
     const probeModelSelect = document.getElementById('probe-model-select');
 
     btnProbe.addEventListener('click', async () => {
@@ -795,47 +887,53 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text })
         });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        document.getElementById('res-primary-label').innerText = data.primary_label;
+        document.getElementById('res-primary-label').innerText = data.primary_label.toUpperCase();
         document.getElementById('res-confidence').innerText = `${Math.round(data.confidence * 100)}%`;
-        document.getElementById('latency-text').innerText = `${data.latency_ms} мс`;
-        document.getElementById('token-count-text').innerText = `Токенов: ${data.tokens_count}`;
-        document.getElementById('device-text').innerText = `Режим: ${data.device.toUpperCase()}`;
+        document.getElementById('latency-text').innerText = `${data.latency_ms.toFixed(2)} мс`;
+        document.getElementById('token-count-text').innerText = `Объём входа: ${data.tokens_count} токенов`;
+        document.getElementById('device-text').innerText = `Аппаратный контекст: ${data.device.toUpperCase()}`;
 
-        // Render Probabilities Bars
-        const container = document.getElementById('prob-bars');
-        container.innerHTML = '';
+        // Render Formal Table Rows
+        const tbody = document.getElementById('prob-table-body');
+        tbody.innerHTML = '';
         data.scores.forEach(s => {
-          const row = document.createElement('div');
-          row.className = 'prob-row';
+          const row = document.createElement('tr');
           row.innerHTML = `
-            <div class="prob-name">${s.label}</div>
-            <div class="prob-track">
-              <div class="prob-fill" style="width: ${s.percentage}%"></div>
-            </div>
-            <div class="prob-pct">${s.percentage}%</div>
+            <td style="font-weight: 500; font-family: var(--font-mono); font-size: 12px;">${s.label}</td>
+            <td>
+              <div class="prob-bar-container">
+                <div class="prob-bar-fill" style="width: ${s.percentage}%"></div>
+              </div>
+            </td>
+            <td style="font-family: var(--font-mono); font-size: 12px; text-align: right; font-weight: 500;">${s.percentage.toFixed(1)}%</td>
           `;
-          container.appendChild(row);
+          tbody.appendChild(row);
         });
       } catch (err) {
-        alert('Ошибка связи с бэкендом: ' + err.message);
+        document.getElementById('res-primary-label').innerText = 'ОШИБКА';
+        document.getElementById('res-confidence').innerText = '0%';
+        const tbody = document.getElementById('prob-table-body');
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--status-error); padding: 12px 0;">Ошибка обращения к ядру: ${err.message}</td></tr>`;
       } finally {
         btnProbe.disabled = false;
-        btnProbe.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Оценить моделью`;
+        btnProbe.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Выполнить инференс`;
       }
     });
 
     document.getElementById('btn-sample-fill').addEventListener('click', () => {
       const samples = [
-        "Невероятно удобное приложение, анализ текстов проходит за считанные секунды!",
-        "Ужасный опыт, постоянные зависания и ничего не понятно.",
-        "Обычный рабочий инструмент для социологических исследований."
+        "Исследование подтверждает статистически значимую положительную корреляцию между параметрами выборки.",
+        "Качество предоставленных материалов вызывает серьёзные сомнения и требует пересмотра методологии.",
+        "Респонденты нейтрально оценили предложенные изменения в регламенте проведения опроса."
       ];
       probeTextInput.value = samples[Math.floor(Math.random() * samples.length)];
+      updateCharCount();
     });
 
-    // File Drag & Drop & Async Processing
+    // Batch File Processing
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.getElementById('file-input');
     const dropzoneText = document.getElementById('dropzone-text');
@@ -848,28 +946,22 @@
     dropzone.addEventListener('drop', (e) => {
       e.preventDefault();
       dropzone.classList.remove('dragover');
-      if (e.dataTransfer.files.length > 0) {
-        handleFileSelect(e.dataTransfer.files[0]);
-      }
+      if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
     });
     fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        handleFileSelect(e.target.files[0]);
-      }
+      if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
     });
 
     function handleFileSelect(file) {
-      if (!file.name.endsWith('.csv')) {
-        alert('Пожалуйста, выберите файл с расширением .csv');
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        alert('Недопустимый формат: поддерживаются исключительно файлы с расширением .csv');
         return;
       }
       selectedFile = file;
-      dropzoneText.innerText = `Выбран файл: ${file.name} (${Math.round(file.size / 1024)} КБ)`;
+      dropzoneText.innerText = `${file.name} (${Math.round(file.size / 1024)} КБ)`;
       btnStartProcess.disabled = false;
-      btnStartProcess.style.opacity = '1';
     }
 
-    // Process Task
     btnStartProcess.addEventListener('click', async () => {
       if (!selectedFile) return;
 
@@ -879,97 +971,93 @@
       formData.append('model_id', modelId);
 
       btnStartProcess.disabled = true;
-      btnStartProcess.style.opacity = '0.5';
 
       const taskWidget = document.getElementById('task-widget');
       const taskBarFill = document.getElementById('task-bar-fill');
       const taskPercentage = document.getElementById('task-percentage');
       const taskRowsText = document.getElementById('task-rows-text');
       const taskDownloadBtn = document.getElementById('task-download-btn');
+      const taskStatusTitle = document.getElementById('task-status-title');
 
-      taskWidget.style.display = 'block';
+      taskWidget.style.display = 'flex';
       taskDownloadBtn.style.display = 'none';
       taskBarFill.style.width = '0%';
-      taskPercentage.innerText = '0%';
+      taskPercentage.innerText = '0.0%';
+      taskStatusTitle.innerText = 'Выполняется пакетная обработка...';
 
       try {
         const res = await fetch(`${API_BASE}/files/process`, {
           method: 'POST',
           body: formData
         });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const task = await res.json();
         const taskId = task.task_id;
 
-        // Poll progress
         const poller = setInterval(async () => {
           try {
             const pRes = await fetch(`${API_BASE}/files/tasks/${taskId}`);
             const pData = await pRes.json();
 
             taskBarFill.style.width = `${pData.progress_percentage}%`;
-            taskPercentage.innerText = `${pData.progress_percentage}%`;
-            taskRowsText.innerText = `${pData.processed_rows} / ${pData.total_rows} строк`;
+            taskPercentage.innerText = `${pData.progress_percentage.toFixed(1)}%`;
+            taskRowsText.innerText = `${pData.processed_rows} / ${pData.total_rows} записей`;
 
             if (pData.status === 'completed') {
               clearInterval(poller);
-              document.getElementById('task-status-title').innerText = 'Обработка завершена!';
+              taskStatusTitle.innerText = 'Обработка массива успешно завершена';
               taskDownloadBtn.style.display = 'inline-block';
               taskDownloadBtn.href = `${API_BASE}/files/tasks/${taskId}/download`;
               taskDownloadBtn.download = `result_${selectedFile.name}`;
+              btnStartProcess.disabled = false;
             }
           } catch (err) {
             clearInterval(poller);
+            btnStartProcess.disabled = false;
           }
         }, 300);
       } catch (err) {
-        alert('Ошибка отправки файла: ' + err.message);
+        alert('Ошибка инициализации задачи: ' + err.message);
+        btnStartProcess.disabled = false;
       }
     });
 
-    // Generate Dummy CSV
     document.getElementById('btn-create-dummy-csv').addEventListener('click', () => {
-      const csvData = "text\nОтличный инструмент для академических исследований.\nУжасный сервис, все сломалось.\nНейтральный комментарий без эмоций.\nОчень удобная десктопная программа с понятным интерфейсом.\nКачество обслуживания оставляет желать лучшего.";
+      const csvData = "text\nРезультаты исследования подтверждают исходную академическую гипотезу.\nКачество исходных данных признано неудовлетворительным.\nСтандартный отчёт об апробации модели без выраженной эмоциональной окраски.\nИнструмент демонстрирует высокую воспроизводимость результатов тестирования.\nМетодологические ошибки привели к искажению статистических параметров.";
       const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-      const file = new File([blob], 'demo_comments.csv', { type: 'text/csv' });
+      const file = new File([blob], 'academic_sample.csv', { type: 'text/csv' });
       handleFileSelect(file);
     });
 
-    // Load Catalog
+    // Model Catalog Loader
     async function loadModelsCatalog() {
       const listEl = document.getElementById('models-list');
-      listEl.innerHTML = '<div style="color: var(--text-muted);">Загрузка каталога...</div>';
+      listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">Загрузка реестра моделей...</div>';
 
       try {
         const res = await fetch(`${API_BASE}/models`);
         const data = await res.json();
-        document.getElementById('models-count').innerText = `Всего моделей: ${data.total}`;
+        document.getElementById('models-count').innerText = `Зарегистрировано: ${data.total}`;
         listEl.innerHTML = '';
 
         data.items.forEach(m => {
           const card = document.createElement('div');
-          card.style.background = 'rgba(7, 16, 27, 0.5)';
-          card.style.border = '1px solid var(--border-subtle)';
-          card.style.borderRadius = 'var(--radius-subcard)';
-          card.style.padding = '18px';
-          card.style.display = 'flex';
-          card.style.flexDirection = 'column';
-          card.style.gap = '8px';
-
+          card.className = 'model-card';
           card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-              <span style="font-weight: 700; color: var(--accent-ice); font-size: 14px;">${m.name}</span>
-              <span style="font-size: 11px; padding: 2px 8px; border-radius: var(--radius-pill); background: rgba(84, 172, 191, 0.2); color: var(--accent-cyan); text-transform: uppercase;">${m.languages.join(', ')}</span>
+            <div class="model-card-header">
+              <span class="model-name">${m.name}</span>
+              <span class="tag-badge">${m.languages.join(', ')}</span>
             </div>
-            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4;">${m.description}</p>
-            <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;">
+            <p class="model-desc">${m.description}</p>
+            <div class="model-meta-row">
               <span>Классы: ${m.labels.slice(0, 3).join(', ')}${m.labels.length > 3 ? '...' : ''}</span>
-              <span style="color: var(--success);">Готова</span>
+              <span style="color: var(--status-ready);">Готова к инференсу</span>
             </div>
           `;
           listEl.appendChild(card);
         });
       } catch (err) {
-        listEl.innerHTML = '<div style="color: var(--danger);">Ошибка загрузки каталога</div>';
+        listEl.innerHTML = '<div style="color: var(--status-error); font-size: 13px;">Ошибка синхронизации с каталогом моделей</div>';
       }
     }
   </script>
