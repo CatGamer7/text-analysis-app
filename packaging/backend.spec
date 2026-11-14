@@ -1,9 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller specification for packaging the Text Analysis Backend
+# PyInstaller specification for packaging the Text Analysis Backend with ONNX runtime
 
 import os
 from pathlib import Path
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+from PyInstaller.utils.hooks import collect_submodules, collect_data_files, collect_dynamic_libs
 
 block_cipher = None
 
@@ -27,23 +27,34 @@ hidden_imports = [
     "pydantic_settings",
     "multipart",
     "python_multipart",
+    "onnxruntime",
+    "tokenizers",
+    "numpy",
 ]
 hidden_imports += collect_submodules("app")
+hidden_imports += collect_submodules("onnxruntime")
+hidden_imports += collect_submodules("tokenizers")
 
 datas = [
     (str(BASE_DIR / "docs"), "docs"),
+    (str(BASE_DIR / "models"), "models"),
 ]
+datas += collect_data_files("onnxruntime")
+datas += collect_data_files("tokenizers")
+
+binaries = []
+binaries += collect_dynamic_libs("onnxruntime")
 
 a = Analysis(
     [str(BASE_DIR / "run.py")],
     pathex=[str(BASE_DIR)],
-    binaries=[],
+    binaries=binaries,
     datas=datas,
     hiddenimports=hidden_imports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=["tkinter", "matplotlib", "scipy", "notebook", "ipython"],
+    excludes=["tkinter", "matplotlib", "scipy", "notebook", "ipython", "torch"],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
