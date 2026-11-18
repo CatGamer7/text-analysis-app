@@ -290,10 +290,207 @@
           }
         }
       }
+    },
+    "/api/v1/files/process": {
+      "post": {
+        "tags": [
+          "File Processing"
+        ],
+        "summary": "Загрузка и запуск асинхронной обработки CSV файла",
+        "description": "Принимает CSV файл строгого формата (1 колонка с текстами) и идентификатор модели. Возвращает 'задача принята, вот её id' и запускает асинхронную обработку в фоновом режиме.",
+        "operationId": "upload_and_process_file_api_v1_files_process_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_and_process_file_api_v1_files_process_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskCreatedResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/tasks/{task_id}/progress": {
+      "get": {
+        "tags": [
+          "File Processing"
+        ],
+        "summary": "Получение прогресса / выгрузка готового файла",
+        "description": "Возвращает прогресс задачи (в % обработанных строк / всего строк). Если обработка завершена — возвращает готовый CSV файл с результатами.",
+        "operationId": "get_task_progress_or_file_api_v1_files_tasks__task_id__progress_get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID задачи обработки",
+              "title": "Task Id"
+            },
+            "description": "ID задачи обработки"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/tasks/{task_id}": {
+      "get": {
+        "tags": [
+          "File Processing"
+        ],
+        "summary": "Статус задачи и прогресс в формате JSON",
+        "description": "Всегда возвращает JSON со статусом, % выполнения и количеством строк.",
+        "operationId": "get_task_status_json_api_v1_files_tasks__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID задачи обработки",
+              "title": "Task Id"
+            },
+            "description": "ID задачи обработки"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskProgressResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/tasks/{task_id}/download": {
+      "get": {
+        "tags": [
+          "File Processing"
+        ],
+        "summary": "Скачать обработанный CSV файл",
+        "description": "Скачивает обработанный CSV файл после завершения задачи.",
+        "operationId": "download_task_result_api_v1_files_tasks__task_id__download_get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID задачи обработки",
+              "title": "Task Id"
+            },
+            "description": "ID задачи обработки"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Body_upload_and_process_file_api_v1_files_process_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "CSV файл с 1 столбцом текстов"
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "ID модели для классификации",
+            "examples": [
+              "rubert-sentiment-conversational"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "model_id"
+        ],
+        "title": "Body_upload_and_process_file_api_v1_files_process_post"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -719,6 +916,173 @@
           "tokens_count"
         ],
         "title": "ProbeResponse"
+      },
+      "TaskCreatedResponse": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id",
+            "description": "Уникальный идентификатор задачи обработки",
+            "examples": [
+              "b7a48d8c-0f9e-4e89-8d75-5c1a7b489d12"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus",
+            "description": "Начальный статус задачи",
+            "default": "pending",
+            "examples": [
+              "pending"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Информационное сообщение",
+            "default": "Задача принята в обработку",
+            "examples": [
+              "Задача принята, вот её id"
+            ]
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "ID примененной модели",
+            "examples": [
+              "rubert-sentiment-conversational"
+            ]
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Имя загруженного исходного файла",
+            "examples": [
+              "comments.csv"
+            ]
+          },
+          "total_rows": {
+            "type": "integer",
+            "title": "Total Rows",
+            "description": "Количество текстовых строк для обработки",
+            "examples": [
+              120
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "Время создания задачи (ISO 8601)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "model_id",
+          "filename",
+          "total_rows",
+          "created_at"
+        ],
+        "title": "TaskCreatedResponse"
+      },
+      "TaskProgressResponse": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id",
+            "description": "Уникальный идентификатор задачи"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus",
+            "description": "Текущий статус обработки"
+          },
+          "total_rows": {
+            "type": "integer",
+            "title": "Total Rows",
+            "description": "Всего строк в файле",
+            "examples": [
+              100
+            ]
+          },
+          "processed_rows": {
+            "type": "integer",
+            "title": "Processed Rows",
+            "description": "Количество обработанных строк",
+            "examples": [
+              45
+            ]
+          },
+          "progress_percentage": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress Percentage",
+            "description": "Прогресс обработки в процентах (0.0 - 100.0)",
+            "examples": [
+              45.0
+            ]
+          },
+          "download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Download Url",
+            "description": "Ссылка для скачивания результирующего CSV (доступна при статусе completed)"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "Сообщение об ошибке, если статус FAILED"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "Время постановки задачи"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At",
+            "description": "Время завершения обработки"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "status",
+          "total_rows",
+          "processed_rows",
+          "progress_percentage",
+          "created_at"
+        ],
+        "title": "TaskProgressResponse"
+      },
+      "TaskStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "processing",
+          "completed",
+          "failed"
+        ],
+        "title": "TaskStatus"
       },
       "ValidationError": {
         "properties": {

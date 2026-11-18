@@ -44,3 +44,17 @@ htmlcov/
 *.log
 scratch/
 tmp/
+
+data/
+
+frontend/node_modules/
+frontend/release/
+
+# Large model weights (>100MB)
+*.safetensors
+*.bin
+*.h5
+*.msgpack
+models/rubert_tiny2_sentiment/
+frontend/dist-react/
+frontend/dist-electron/

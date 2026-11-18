@@ -1,7 +1,7 @@
 {
   "name": "text-analysis-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "dev:electron": "npm run transpile:electron && cross-env NODE_ENV=development electron .",
     "transpile:electron": "tsc --project src/electron/tsconfig.json",
     "build": "tsc -b && vite build",
+    "pack": "npm run transpile:electron && npm run build && electron-builder --dir",
     "lint": "eslint .",
     "preview": "vite preview",
     "dist:win": "npm run transpile:electron && npm run build && electron-builder --win --x64"

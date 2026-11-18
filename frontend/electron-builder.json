@@ -5,6 +5,12 @@
     "output": "release"
   },
   "files": ["dist-electron", "dist-react"],
+  "extraResources": [
+    {
+      "from": "../dist/text-analysis-backend",
+      "to": "backend"
+    }
+  ],
   "win": {
     "target": ["nsis"]
   },
