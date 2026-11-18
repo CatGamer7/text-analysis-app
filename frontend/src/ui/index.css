@@ -1,0 +1,333 @@
+:root {
+  /* Цвета из UI kit в Figma: Surface1–3, Primary, Secondary и Muted text */
+  --bg: #1b1e21;
+  --sidebar: #22262a;
+  --surface: #22262a;
+  --surface-hover: #2a2f34;
+  --text: #e9ecef;
+  --secondary: #a7afb7;
+  --muted: #747d86;
+  --error: #f0746e;
+
+  font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Боковая панель */
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: var(--sidebar);
+}
+
+.brand {
+  padding: 0 4px 24px;
+  font-size: 22px;
+}
+
+.new-analysis {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface-hover);
+  text-align: left;
+}
+
+.history-title {
+  padding: 18px 4px 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 8px;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.history-item:hover,
+.history-item.active {
+  background: var(--surface);
+}
+
+.history-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-time {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Основная область */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+/* Выбор модели карточками */
+.model-picker {
+  margin-bottom: 8px;
+}
+
+.model-picker h2 {
+  margin: 0 0 16px;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.model-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 128px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: left;
+  color: var(--secondary);
+}
+
+.model-card:hover {
+  background: var(--surface-hover);
+}
+
+.model-card.selected {
+  color: var(--text);
+}
+
+.model-radio {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+}
+
+.model-card.selected .model-radio {
+  border-color: var(--text);
+  box-shadow: inset 0 0 0 3px var(--bg);
+  background: var(--text);
+}
+
+.mode-switch {
+  display: flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.mode-switch button {
+  padding: 5px 14px;
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+.mode-switch button.active {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+/* Поле ввода */
+.composer {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.composer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.composer textarea {
+  display: block;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  resize: none;
+}
+
+.composer textarea::placeholder {
+  color: var(--muted);
+}
+
+.send {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface-hover);
+}
+
+.send:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.choose-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  color: var(--muted);
+}
+
+.choose-file:hover {
+  color: var(--text);
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: var(--secondary);
+}
+
+.file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress {
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--surface-hover);
+}
+
+.progress div {
+  height: 100%;
+  background: var(--muted);
+  transition: width 0.1s linear;
+}
+
+.file-error {
+  color: var(--error);
+}
+
+.file-error button {
+  padding: 0;
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.icon-button {
+  padding: 4px 8px;
+  color: var(--muted);
+}
+
+.icon-button:hover {
+  color: var(--text);
+}
+
+/* Статистика запроса */
+h2 {
+  margin: 24px 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.results {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  align-content: start;
+  margin-bottom: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.results article {
+  min-height: 180px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: var(--surface-hover);
+}
+
+.results .tall {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+.results h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
