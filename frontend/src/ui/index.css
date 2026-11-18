@@ -331,3 +331,162 @@ h2 {
   font-size: 14px;
   font-weight: 600;
 }
+
+/* Дополнительные стили для данных инференса и телеметрии */
+.server-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background: var(--surface-hover);
+  font-size: 12px;
+  color: var(--secondary);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f0746e;
+}
+
+.status-dot.online {
+  background: #3fb950;
+  box-shadow: 0 0 6px rgba(63, 185, 80, 0.4);
+}
+
+.model-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.model-title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.model-sub {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.card-content {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+
+.card-primary-class {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-confidence {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.score-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.score-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.score-bar-label {
+  width: 70px;
+  text-transform: capitalize;
+  color: var(--secondary);
+  font-size: 11px;
+}
+
+.score-bar-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: #58a6ff;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.score-bar-pct {
+  width: 45px;
+  text-align: right;
+  font-family: Consolas, monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+}
+
+.telemetry-row:last-child {
+  border-bottom: 0;
+}
+
+.telemetry-label {
+  color: var(--muted);
+}
+
+.telemetry-val {
+  font-family: Consolas, monospace;
+  color: var(--text);
+}
+
+.quote-box {
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.download-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #238636;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.download-link:hover {
+  background: #2ea043;
+}

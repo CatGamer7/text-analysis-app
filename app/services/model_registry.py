@@ -14,13 +14,25 @@ class ModelRegistry:
             ModelMetadata(
                 id="rubert-sentiment-conversational",
                 name="RuBERT Conversational Sentiment (Russian)",
-                description="Анализ тональности русскоязычных текстов социальных сетей на базе RuBERT conversational.",
+                description="Анализ тональности русскоязычных текстов социальных сетей на базе RuBERT conversational (ONNX).",
                 task_type=ModelTaskType.SENTIMENT,
                 languages=["ru"],
                 labels=["negative", "neutral", "positive"],
                 hf_repo_id="cointegrated/rubert-tiny-sentiment-balanced",
                 max_sequence_length=512,
                 default_sample_text="Проект получился отличный, интерфейс понятный и отзывчивый!",
+                status=ModelStatus.READY
+            ),
+            ModelMetadata(
+                id="rubert-tiny2-sentiment",
+                name="RuBERT Tiny2 Sentiment (230MB)",
+                description="Анализ тональности русскоязычных текстов на базе полной модели RuBERT-tiny2 (~230 МБ).",
+                task_type=ModelTaskType.SENTIMENT,
+                languages=["ru"],
+                labels=["neutral", "positive", "negative"],
+                hf_repo_id="seara/rubert-tiny2-russian-sentiment",
+                max_sequence_length=512,
+                default_sample_text="Отличная новость, всё работает быстро и точно!",
                 status=ModelStatus.READY
             ),
             ModelMetadata(
