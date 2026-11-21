@@ -1,0 +1,88 @@
+{
+  "request": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "NLPRequest",
+    "type": "object",
+    "required": ["task", "language", "text"],
+    "properties": {
+      "task":     {"type": "string", "enum": ["ner", "sentiment", "emotion"]},
+      "language": {"type": "string", "enum": ["ru", "en"]},
+      "text":     {"type": "string", "minLength": 1},
+      "model":    {"type": "string", "description": "Необязательно. Название из models.py, по умолчанию — модель для пары задача + язык"},
+      "device":   {"type": "string", "enum": ["auto", "cpu", "cuda", "mps"], "default": "auto"}
+    }
+  },
+
+  "response": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "NLPResponse",
+    "oneOf": [
+      {
+        "type": "object",
+        "required": ["task", "language", "model", "device", "fallback", "inference_time_ms", "results"],
+        "properties": {
+          "task":     {"type": "string"},
+          "language": {"type": "string"},
+          "model":    {"type": "string"},
+          "device":   {"type": "string", "enum": ["cpu", "cuda", "mps"]},
+          "fallback": {"type": "boolean", "description": "true — пришлось перейти с GPU на CPU"},
+          "inference_time_ms": {"type": "number"},
+          "results":  {"type": "array", "items": {"type": "object"},
+                       "description": "sentiment/emotion: [{label, score}] по убыванию; ner: [{entity, word, start, end, score}]"}
+        }
+      },
+      {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code":    {"type": "string", "enum": ["INVALID_INPUT", "MODEL_NOT_FOUND", "MODEL_LOAD_FAILED", "INFERENCE_FAILED"]},
+              "message": {"type": "string"}
+            }
+          }
+        }
+      }
+    ]
+  },
+
+  "examples": {
+    "ner_request": {"task": "ner", "language": "ru", "text": "Иван Петров живёт в Москве"},
+    "ner_response": {
+      "task": "ner", "language": "ru", "model": "ner-bert-ru", "device": "mps", "fallback": false, "inference_time_ms": 21.4,
+      "results": [
+        {"entity": "FIRST_NAME", "word": "Иван",   "start": 0,  "end": 4,  "score": 0.997},
+        {"entity": "LAST_NAME",  "word": "Петров", "start": 5,  "end": 11, "score": 0.996},
+        {"entity": "CITY",       "word": "Москве", "start": 20, "end": 26, "score": 0.998}
+      ]
+    },
+
+    "sentiment_request": {"task": "sentiment", "language": "ru", "text": "Отличный сервис, очень доволен!"},
+    "sentiment_response": {
+      "task": "sentiment", "language": "ru", "model": "sentiment-rubert-tiny-ru", "device": "cpu", "fallback": false, "inference_time_ms": 3.1,
+      "results": [
+        {"label": "positive", "score": 0.9978},
+        {"label": "neutral",  "score": 0.0019},
+        {"label": "negative", "score": 0.0003}
+      ]
+    },
+
+    "emotion_request": {"task": "emotion", "language": "en", "text": "I am so happy today!", "device": "cuda"},
+    "emotion_response": {
+      "task": "emotion", "language": "en", "model": "emotion-distilroberta-en", "device": "cpu", "fallback": true, "inference_time_ms": 18.7,
+      "results": [
+        {"label": "joy",      "score": 0.9712},
+        {"label": "surprise", "score": 0.0121},
+        {"label": "neutral",  "score": 0.0063},
+        {"label": "sadness",  "score": 0.0041},
+        {"label": "anger",    "score": 0.0030},
+        {"label": "disgust",  "score": 0.0019},
+        {"label": "fear",     "score": 0.0014}
+      ]
+    },
+
+    "error_response": {"error": {"code": "MODEL_NOT_FOUND", "message": "Модель 'abc' не найдена. Список моделей: python model_runner.py --list"}}
+  }
+}

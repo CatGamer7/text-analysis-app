@@ -1,0 +1,8 @@
+torch>=2.2
+transformers>=4.38
+psutil>=5.9
+sentencepiece>=0.1.99   # токенизатор mDeBERTa (emotion-mdeberta-multi)
+protobuf>=3.20
+# для тестов
+pytest>=7
+jsonschema>=4

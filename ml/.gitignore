@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Виртуальное окружение
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Кэш моделей Hugging Face (если задан локально)
+hf_cache/
+
+# Старая версия файлов (до переработки), только локально
+_old_version/
