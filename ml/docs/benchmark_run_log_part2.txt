@@ -1,0 +1,16 @@
+  ner-bert-ru                    mps   128 ток.  медиана    20.33 мс
+  ner-bert-ru                    mps   512 ток.  медиана    64.16 мс
+  ner-bert-ru                    cpu   128 ток.  медиана    37.36 мс
+  ner-bert-ru                    cpu   512 ток.  медиана   133.63 мс
+  sentiment-xlmr-multi           mps   128 ток.  медиана    17.98 мс
+  sentiment-xlmr-multi           mps   512 ток.  медиана    60.81 мс
+  sentiment-xlmr-multi           cpu   128 ток.  медиана    40.05 мс
+  sentiment-xlmr-multi           cpu   512 ток.  медиана   136.39 мс
+  emotion-xlmr-multi             mps   128 ток.  медиана    18.02 мс
+  emotion-xlmr-multi             mps   512 ток.  медиана    60.79 мс
+  emotion-xlmr-multi             cpu   128 ток.  медиана    38.03 мс
+  emotion-xlmr-multi             cpu   512 ток.  медиана   136.26 мс
+  emotion-mdeberta-multi на mps: ошибка — 'list' object has no attribute 'keys'
+  emotion-mdeberta-multi на cpu: ошибка — 'list' object has no attribute 'keys'
+
+Сохранено: /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.csv, /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.md

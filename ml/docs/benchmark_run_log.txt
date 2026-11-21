@@ -1,0 +1,50 @@
+Some weights of the model checkpoint at dslim/bert-base-NER were not used when initializing BertForTokenClassification: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight']
+- This IS expected if you are initializing BertForTokenClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForTokenClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at dslim/bert-base-NER were not used when initializing BertForTokenClassification: ['bert.pooler.dense.bias', 'bert.pooler.dense.weight']
+- This IS expected if you are initializing BertForTokenClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForTokenClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at cardiffnlp/twitter-roberta-base-sentiment-latest were not used when initializing RobertaForSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+- This IS expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at cardiffnlp/twitter-roberta-base-sentiment-latest were not used when initializing RobertaForSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+- This IS expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+  ner-bert-ru                    mps   128 ток.  медиана    41.05 мс
+  ner-bert-ru                    mps   512 ток.  медиана    88.35 мс
+  ner-bert-ru                    cpu   128 ток.  медиана    70.83 мс
+  ner-bert-ru                    cpu   512 ток.  медиана   325.40 мс
+  ner-wikineural-multi           mps   128 ток.  медиана    21.73 мс
+  ner-wikineural-multi           mps   512 ток.  медиана    67.05 мс
+  ner-wikineural-multi           cpu   128 ток.  медиана    38.41 мс
+  ner-wikineural-multi           cpu   512 ток.  медиана   139.49 мс
+  ner-bert-en                    mps   128 ток.  медиана    21.04 мс
+  ner-bert-en                    mps   512 ток.  медиана    65.54 мс
+  ner-bert-en                    cpu   128 ток.  медиана    43.31 мс
+  ner-bert-en                    cpu   512 ток.  медиана   142.35 мс
+  sentiment-rubert-tiny-ru       mps   128 ток.  медиана     4.63 мс
+  sentiment-rubert-tiny-ru       mps   512 ток.  медиана     7.10 мс
+  sentiment-rubert-tiny-ru       cpu   128 ток.  медиана     2.69 мс
+  sentiment-rubert-tiny-ru       cpu   512 ток.  медиана    11.48 мс
+  sentiment-rubert-tiny2-ru      mps   128 ток.  медиана     4.51 мс
+  sentiment-rubert-tiny2-ru      mps   512 ток.  медиана     8.06 мс
+  sentiment-rubert-tiny2-ru      cpu   128 ток.  медиана     2.53 мс
+  sentiment-rubert-tiny2-ru      cpu   512 ток.  медиана     9.96 мс
+  sentiment-twitter-roberta-en   mps   128 ток.  медиана    20.42 мс
+  sentiment-twitter-roberta-en   mps   512 ток.  медиана    64.34 мс
+  sentiment-twitter-roberta-en   cpu   128 ток.  медиана    40.01 мс
+  sentiment-twitter-roberta-en   cpu   512 ток.  медиана   137.39 мс
+  emotion-rubert-tiny2-cedr-ru   mps   128 ток.  медиана     4.64 мс
+  emotion-rubert-tiny2-cedr-ru   mps   512 ток.  медиана     7.02 мс
+  emotion-rubert-tiny2-cedr-ru   cpu   128 ток.  медиана     2.51 мс
+  emotion-rubert-tiny2-cedr-ru   cpu   512 ток.  медиана    10.04 мс
+  emotion-rubert-base-ru         mps   128 ток.  медиана    20.25 мс
+  emotion-rubert-base-ru         mps   512 ток.  медиана    64.13 мс
+  emotion-rubert-base-ru         cpu   128 ток.  медиана    39.69 мс
+  emotion-rubert-base-ru         cpu   512 ток.  медиана   135.51 мс
+  emotion-distilroberta-en       mps   128 ток.  медиана    10.63 мс
+  emotion-distilroberta-en       mps   512 ток.  медиана    32.18 мс
+  emotion-distilroberta-en       cpu   128 ток.  медиана    18.89 мс
+  emotion-distilroberta-en       cpu   512 ток.  медиана    67.63 мс
+
+Сохранено: /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.csv, /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.md

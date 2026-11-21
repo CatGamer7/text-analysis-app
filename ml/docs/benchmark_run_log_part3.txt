@@ -1,0 +1,6 @@
+  emotion-mdeberta-multi         mps   128 ток.  медиана    39.84 мс
+  emotion-mdeberta-multi         mps   512 ток.  медиана   165.64 мс
+  emotion-mdeberta-multi         cpu   128 ток.  медиана    65.60 мс
+  emotion-mdeberta-multi         cpu   512 ток.  медиана   244.29 мс
+
+Сохранено: /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.csv, /Users/nikitaiudin/Documents/nlp-prototype/results/benchmark.md
